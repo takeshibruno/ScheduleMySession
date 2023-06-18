@@ -1,11 +1,12 @@
 {
   "expo": {
-    "name": "Argon FREE React Native",
+    "name": "Aiise",
     "slug": "argon-free-react-native",
     "privacy": "public",
     "platforms": [
       "ios",
-      "android"
+      "android",
+      "web"
     ],
     "version": "1.7.1",
     "orientation": "portrait",

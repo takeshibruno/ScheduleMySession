@@ -1,10 +1,12 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { Image } from "react-native";
-import AppLoading from "expo-app-loading";
+import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from '@use-expo/font';
 import { Asset } from "expo-asset";
 import { Block, GalioProvider } from "galio-framework";
 import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { NativeBaseProvider } from 'native-base';
 
 // Before rendering any navigation stack
 import { enableScreens } from "react-native-screens";
@@ -23,6 +25,20 @@ const assetImages = [
   Images.iOSLogo,
   Images.androidLogo
 ];
+
+const Stack = createStackNavigator();
+
+const AuthStack = () => {
+  return (
+    <NativeBaseProvider>
+      <Stack.Navigator initialRouteName="Login">
+        <Stack.Screen name="Login" component={LoginScreen} />
+        {/* Add other authentication screens if needed */}
+      </Stack.Navigator>
+    </NativeBaseProvider>
+
+  );
+};
 
 // cache product images
 articles.map(article => assetImages.push(article.image));
@@ -53,27 +69,24 @@ export default props => {
     console.warn(error);
   };
 
- function _handleFinishLoading() {
+  function _handleFinishLoading() {
     setLoading(true);
   };
 
-  if(!fontsLoaded && !isLoadingComplete) {
+  if (!fontsLoaded && !isLoadingComplete) {
+    SplashScreen.preventAutoHideAsync();
+  } else if (fontsLoaded) {
+    SplashScreen.hideAsync();
     return (
-      <AppLoading
-        startAsync={_loadResourcesAsync}
-        onError={_handleLoadingError}
-        onFinish={_handleFinishLoading}
-      />
-    );
-  } else if(fontsLoaded) {
-    return (
-      <NavigationContainer>
-        <GalioProvider theme={argonTheme}>
-          <Block flex>
-            <Screens />
-          </Block>
-        </GalioProvider>
-      </NavigationContainer>
+      <NativeBaseProvider>
+        <NavigationContainer>
+          <GalioProvider theme={argonTheme}>
+            <Block flex>
+              <Screens />
+            </Block>
+          </GalioProvider>
+        </NavigationContainer>
+      </NativeBaseProvider>
     );
   } else {
     return null
